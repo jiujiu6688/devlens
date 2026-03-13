@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevLens - AI API Debugging & Monitoring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .lang-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #4b5563;
+            background: transparent;
+            color: #9ca3af;
+        }
+        .lang-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        .lang-btn:hover:not(.active) {
+            background: #374151;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="min-h-screen flex flex-col">
+        <!-- Language Switcher -->
+        <div class="fixed top-4 right-4 z-50">
+            <button id="lang-zh" class="lang-btn active">中文</button>
+            <button id="lang-en" class="lang-btn">EN</button>
+        </div>
+
+        <!-- Hero -->
+        <header class="pt-20 pb-16 px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="inline-block px-3 py-1 mb-4 text-sm bg-blue-600 rounded-full" data-i18n="hero.badge">🚀 AI 开发者必备工具</div>
+                <h1 class="text-5xl font-bold mb-6" data-i18n="hero.title">再也不用猜 AI 在干什么了</h1>
+                <p class="text-xl text-gray-400 mb-4" data-i18n="hero.subtitle">DevLens - 你的 AI API 调试、监控、成本控制一体化平台</p>
+                <p class="text-lg text-gray-500 mb-8" data-i18n="hero.tagline">让每一次 AI 调用都清晰可见</p>
+                <div class="flex justify-center gap-4">
+                    <a href="#waitlist" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition" data-i18n="hero.cta1">🚀 免费试用</a>
+                    <a href="#features" class="px-8 py-3 border border-gray-600 hover:border-gray-500 rounded-lg font-semibold transition" data-i18n="hero.cta2">查看功能</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Pain Points -->
+        <section class="py-16 px-4 bg-gray-800">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-4" data-i18n="pain.title">AI 开发者的崩溃日常</h2>
+                <p class="text-center text-gray-400 mb-12" data-i18n="pain.subtitle">这些痛点，我们懂</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-6 bg-gray-700 rounded-xl">
+                        <div class="text-4xl mb-4">💸</div>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="pain.p1.title">月底收到账单傻眼了</h3>
+                        <p class="text-gray-400" data-i18n="pain.p1.desc">"我就调了几下 API，怎么烧了 3000 块？"——不知道哪个项目、哪个模型、哪次调用在疯狂花钱</p>
+                    </div>
+                    <div class="p-6 bg-gray-700 rounded-xl">
+                        <div class="text-4xl mb-4">🤔</div>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="pain.p2.title">AI 回答得像在梦游</h3>
+                        <p class="text-gray-400" data-i18n="pain.p2.desc">返回的内容不知道是参数问题、prompt 问题还是模型本身抽风，只能一层层试错排查</p>
+                    </div>
+                    <div class="p-6 bg-gray-700 rounded-xl">
+                        <div class="text-4xl mb-4">📉</div>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="pain.p3.title">模型突然变"笨"了</h3>
+                        <p class="text-gray-400" data-i18n="pain.p3.desc">上周还好好的，这周输出质量暴跌——是模型更新了？还是我的数据有问题？完全没头绪</p>
+                    </div>
+                    <div class="p-6 bg-gray-700 rounded-xl">
+                        <div class="text-4xl mb-4">⏱️</div>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="pain.p4.title">响应慢成 PPT</h3>
+                        <p class="text-gray-400" data-i18n="pain.p4.desc">用户投诉"怎么转圈圈了"，你却不知道是网络、模型还是 token 长度的问题</p>
+                    </div>
+                    <div class="p-6 bg-gray-700 rounded-xl">
+                        <div class="text-4xl mb-4">🧮</div>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="pain.p5.title">Token 计算完全蒙圈</h3>
+                        <p class="text-gray-400" data-i18n="pain.p5.desc">每个模型的 token 计算方式不一样，预算根本做不准，花超了才知道</p>
+                    </div>
+                    <div class="p-6 bg-gray-700 rounded-xl">
+                        <div class="text-4xl mb-4">🎯</div>
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="pain.p6.title">Prompt 调教像玄学</h3>
+                        <p class="text-gray-400" data-i18n="pain.p6.desc">改了个词 AI 就答非所问，想回溯哪个 prompt 版本效果最好——没记录，没对比</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features" class="py-16 px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-12" data-i18n="features.title">DevLens 帮你解决</h2>
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4 p-6 bg-gray-800 rounded-xl">
+                        <div class="text-2xl">1</div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2" data-i18n="features.f1.title">💰 实时成本追踪</h3>
+                            <p class="text-gray-400" data-i18n="features.f1.desc">按项目、按模型、按时间段分析 API 费用，设置预算告警。烧钱第一时间知道，不用月底才发现</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-6 bg-gray-800 rounded-xl">
+                        <div class="text-2xl">2</div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2" data-i18n="features.f2.title">🔍 对话调试器</h3>
+                            <p class="text-gray-400" data-i18n="features.f2.desc">可视化查看每次 AI 调用，输入输出完整记录，一眼看出是哪里出了问题</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-6 bg-gray-800 rounded-xl">
+                        <div class="text-2xl">3</div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2" data-i18n="features.f3.title">📊 性能监控</h3>
+                            <p class="text-gray-400" data-i18n="features.f3.desc">追踪响应时间、成功率、模型表现，智能告警。模型变"笨"立刻发现</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-6 bg-gray-800 rounded-xl">
+                        <div class="text-2xl">4</div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2" data-i18n="features.f4.title">🧪 Prompt 版本管理</h3>
+                            <p class="text-gray-400" data-i18n="features.f4.desc">记录每次 prompt 修改，对比不同版本效果，让调教 AI 变成科学实验</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing -->
+        <section class="py-16 px-4 bg-gray-800">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-4" data-i18n="pricing.title">定价透明，无套路</h2>
+                <p class="text-center text-gray-400 mb-12" data-i18n="pricing.subtitle">按量计费不够用？试试包月更划算</p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-6 bg-gray-900 rounded-xl text-center">
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="pricing.plan1.title">个人版</h3>
+                        <div class="text-4xl font-bold mb-4" data-i18n="pricing.plan1.price">免费</div>
+                        <ul class="text-gray-400 text-left space-y-2 mb-6">
+                            <li data-i18n="pricing.plan1.feature1">✓ 1,000 次调用追踪</li>
+                            <li data-i18n="pricing.plan1.feature2">✓ 基础成本分析</li>
+                            <li data-i18n="pricing.plan1.feature3">✓ 7 天数据保留</li>
+                            <li data-i18n="pricing.plan1.feature4">✓ 1 个项目</li>
+                        </ul>
+                        <a href="#waitlist" class="block w-full py-2 border border-gray-600 rounded-lg hover:bg-gray-800" data-i18n="pricing.plan1.cta">免费开始 →</a>
+                    </div>
+                    <div class="p-6 bg-blue-900 rounded-xl text-center border-2 border-blue-500 relative">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-600 text-sm rounded-full" data-i18n="pricing.plan2.badge">最受欢迎</div>
+                        <h3 class="text-xl font-semibold mb-2">Pro</h3>
+                        <div class="text-4xl font-bold mb-4">$19</div>
+                        <p class="text-sm text-gray-400 mb-4" data-i18n="pricing.plan2.period">/月 (相当于 $0.6/天)</p>
+                        <ul class="text-gray-300 text-left space-y-2 mb-6">
+                            <li data-i18n="pricing.plan2.feature1">✓ 50,000 次调用追踪</li>
+                            <li data-i18n="pricing.plan2.feature2">✓ 高级成本分析</li>
+                            <li data-i18n="pricing.plan2.feature3">✓ 90 天数据保留</li>
+                            <li data-i18n="pricing.plan2.feature4">✓ 预算告警</li>
+                            <li data-i18n="pricing.plan2.feature5">✓ 5 个项目</li>
+                        </ul>
+                        <a href="#waitlist" class="block w-full py-2 bg-blue-600 rounded-lg hover:bg-blue-700" data-i18n="pricing.plan2.cta">立即预订 ↓</a>
+                    </div>
+                    <div class="p-6 bg-gray-900 rounded-xl text-center">
+                        <h3 class="text-xl font-semibold mb-2" data-i18n="pricing.plan3.title">团队版</h3>
+                        <div class="text-4xl font-bold mb-4">$79</div>
+                        <p class="text-sm text-gray-400 mb-4" data-i18n="pricing.plan3.period">/月</p>
+                        <ul class="text-gray-400 text-left space-y-2 mb-6">
+                            <li data-i18n="pricing.plan3.feature1">✓ 无限调用追踪</li>
+                            <li data-i18n="pricing.plan3.feature2">✓ 无限项目</li>
+                            <li data-i18n="pricing.plan3.feature3">✓ 1 年数据保留</li>
+                            <li data-i18n="pricing.plan3.feature4">✓ 团队协作</li>
+                            <li data-i18n="pricing.plan3.feature5">✓ 优先支持</li>
+                            <li data-i18n="pricing.plan3.feature6">✓ API 访问</li>
+                        </ul>
+                        <a href="#waitlist" class="block w-full py-2 border border-gray-600 rounded-lg hover:bg-gray-800" data-i18n="pricing.plan3.cta">联系我们 →</a>
+                    </div>
+                </div>
+                <p class="text-center text-gray-500 mt-8" data-i18n="pricing.tip">💡 Pro 版平均每天不到 1 杯奶茶钱，省下的调试时间价值翻倍</p>
+            </div>
+        </section>
+
+        <!-- Waitlist -->
+        <section id="waitlist" class="py-20 px-4">
+            <div class="max-w-2xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-4" data-i18n="waitlist.title">别让你的 AI 继续"盲盒"了</h2>
+                <p class="text-gray-400 mb-8" data-i18n="waitlist.subtitle">加入等待列表，享早期优惠价 + 专属客服</p>
+                <form class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <input type="email" placeholder="your@email.com" class="px-6 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 flex-1 max-w-md">
+                    <button type="submit" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition" data-i18n="waitlist.cta">🔥 抢占优惠</button>
+                </form>
+                <p class="text-sm text-gray-500 mt-4" data-i18n="waitlist.stats">已有 127 位开发者加入 · 平均节省 60% 调试时间</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-8 px-4 text-center text-gray-500">
+            <p>© 2026 DevLens. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                "hero.badge": "🚀 Must-have Tool for AI Developers",
+                "hero.title": "Stop Guessing What AI Is Doing",
+                "hero.subtitle": "DevLens - Your All-in-One AI API Debugging, Monitoring & Cost Control Platform",
+                "hero.tagline": "Make Every AI Call Clear and Visible",
+                "hero.cta1": "🚀 Free Trial",
+                "hero.cta2": "View Features",
+                "pain.title": "The Daily Struggles of AI Developers",
+                "pain.subtitle": "We understand these pain points",
+                "pain.p1.title": "Shocked by the Month-End Bill",
+                "pain.p1.desc": "\"I only called the API a few times, how did I burn $300?\" - No idea which project, model, or call is draining your budget",
+                "pain.p2.title": "AI Responses Like It's Dreaming",
+                "pain.p2.desc": "No idea if it's parameters, prompts, or the model itself - gotta debug layer by layer",
+                "pain.p3.title": "Model Suddenly Got \"Stupid\"",
+                "pain.p3.desc": "Worked fine last week, now quality tanked - model update? Data issue? No clue",
+                "pain.p4.title": "Responses Slower Than a PowerPoint",
+                "pain.p4.desc": "Users complain \"why is it spinning\", but you can't tell if it's network, model, or token length",
+                "pain.p5.title": "Token Calculation is a Mystery",
+                "pain.p5.desc": "Each model has different token calculation methods, budget is never accurate",
+                "pain.p6.title": "Prompt Tuning Feels Like Magic",
+                "pain.p6.desc": "Change one word and AI goes off-track, want to revert but no history, no comparison",
+                "features.title": "DevLens Solves This for You",
+                "features.f1.title": "💰 Real-time Cost Tracking",
+                "features.f1.desc": "Analyze API costs by project, model, and time period. Set budget alerts. Know immediately when money is burning.",
+                "features.f2.title": "🔍 Conversation Debugger",
+                "features.f2.desc": "Visualize every AI call with complete input/output logging. Spot issues at a glance.",
+                "features.f3.title": "📊 Performance Monitoring",
+                "features.f3.desc": "Track response time, success rate, model performance. Smart alerts when models get \"stupid\".",
+                "features.f4.title": "🧪 Prompt Version Management",
+                "features.f4.desc": "Record every prompt change, compare version effects. Turn AI tuning into a science.",
+                "pricing.title": "Transparent Pricing, No Tricks",
+                "pricing.subtitle": "Pay-as-you-go not enough? Try monthly plans",
+                "pricing.plan1.title": "Personal",
+                "pricing.plan1.price": "Free",
+                "pricing.plan1.feature1": "✓ 1,000 call tracking",
+                "pricing.plan1.feature2": "✓ Basic cost analysis",
+                "pricing.plan1.feature3": "✓ 7-day data retention",
+                "pricing.plan1.feature4": "✓ 1 project",
+                "pricing.plan1.cta": "Get Started Free →",
+                "pricing.plan2.badge": "Most Popular",
+                "pricing.plan2.period": "/month (~$0.6/day)",
+                "pricing.plan2.feature1": "✓ 50,000 call tracking",
+                "pricing.plan2.feature2": "✓ Advanced cost analysis",
+                "pricing.plan2.feature3": "✓ 90-day data retention",
+                "pricing.plan2.feature4": "✓ Budget alerts",
+                "pricing.plan2.feature5": "✓ 5 projects",
+                "pricing.plan2.cta": "Get Started ↓",
+                "pricing.plan3.title": "Team",
+                "pricing.plan3.period": "/month",
+                "pricing.plan3.feature1": "✓ Unlimited call tracking",
+                "pricing.plan3.feature2": "✓ Unlimited projects",
+                "pricing.plan3.feature3": "✓ 1-year data retention",
+                "pricing.plan3.feature4": "✓ Team collaboration",
+                "pricing.plan3.feature5": "✓ Priority support",
+                "pricing.plan3.feature6": "✓ API access",
+                "pricing.plan3.cta": "Contact Us →",
+                "pricing.tip": "💡 Pro plan costs less than 1 bubble tea per day - the debugging time you save is worth double!",
+                "waitlist.title": "Stop Letting Your AI Be a \"Black Box\"",
+                "waitlist.subtitle": "Join waitlist for early-bird pricing + dedicated support",
+                "waitlist.cta": "🔥 Claim Your Spot",
+                "waitlist.stats": "127 developers joined · Save 60% debugging time on average"
+            },
+            zh: {
+                "hero.badge": "🚀 AI 开发者必备工具",
+                "hero.title": "再也不用猜 AI 在干什么了",
+                "hero.subtitle": "DevLens - 你的 AI API 调试、监控、成本控制一体化平台",
+                "hero.tagline": "让每一次 AI 调用都清晰可见",
+                "hero.cta1": "🚀 免费试用",
+                "hero.cta2": "查看功能",
+                "pain.title": "AI 开发者的崩溃日常",
+                "pain.subtitle": "这些痛点，我们懂",
+                "pain.p1.title": "月底收到账单傻眼了",
+                "pain.p1.desc": "\"我就调了几下 API，怎么烧了 3000 块？\"——不知道哪个项目、哪个模型、哪次调用在疯狂花钱",
+                "pain.p2.title": "AI 回答得像在梦游",
+                "pain.p2.desc": "返回的内容不知道是参数问题、prompt 问题还是模型本身抽风，只能一层层试错排查",
+                "pain.p3.title": "模型突然变\"笨\"了",
+                "pain.p3.desc": "上周还好好的，这周输出质量暴跌——是模型更新了？还是我的数据有问题？完全没头绪",
+                "pain.p4.title": "响应慢成 PPT",
+                "pain.p4.desc": "用户投诉\"怎么转圈圈了\"，你却不知道是网络、模型还是 token 长度的问题",
+                "pain.p5.title": "Token 计算完全蒙圈",
+                "pain.p5.desc": "每个模型的 token 计算方式不一样，预算根本做不准，花超了才知道",
+                "pain.p6.title": "Prompt 调教像玄学",
+                "pain.p6.desc": "改了个词 AI 就答非所问，想回溯哪个 prompt 版本效果最好——没记录，没对比",
+                "features.title": "DevLens 帮你解决",
+                "features.f1.title": "💰 实时成本追踪",
+                "features.f1.desc": "按项目、按模型、按时间段分析 API 费用，设置预算告警。烧钱第一时间知道，不用月底才发现",
+                "features.f2.title": "🔍 对话调试器",
+                "features.f2.desc": "可视化查看每次 AI 调用，输入输出完整记录，一眼看出是哪里出了问题",
+                "features.f3.title": "📊 性能监控",
+                "features.f3.desc": "追踪响应时间、成功率、模型表现，智能告警。模型变\"笨\"立刻发现",
+                "features.f4.title": "🧪 Prompt 版本管理",
+                "features.f4.desc": "记录每次 prompt 修改，对比不同版本效果，让调教 AI 变成科学实验",
+                "pricing.title": "定价透明，无套路",
+                "pricing.subtitle": "按量计费不够用？试试包月更划算",
+                "pricing.plan1.title": "个人版",
+                "pricing.plan1.price": "免费",
+                "pricing.plan1.feature1": "✓ 1,000 次调用追踪",
+                "pricing.plan1.feature2": "✓ 基础成本分析",
+                "pricing.plan1.feature3": "✓ 7 天数据保留",
+                "pricing.plan1.feature4": "✓ 1 个项目",
+                "pricing.plan1.cta": "免费开始 →",
+                "pricing.plan2.badge": "最受欢迎",
+                "pricing.plan2.period": "/月 (相当于 $0.6/天)",
+                "pricing.plan2.feature1": "✓ 50,000 次调用追踪",
+                "pricing.plan2.feature2": "✓ 高级成本分析",
+                "pricing.plan2.feature3": "✓ 90 天数据保留",
+                "pricing.plan2.feature4": "✓ 预算告警",
+                "pricing.plan2.feature5": "✓ 5 个项目",
+                "pricing.plan2.cta": "立即预订 ↓",
+                "pricing.plan3.title": "团队版",
+                "pricing.plan3.period": "/月",
+                "pricing.plan3.feature1": "✓ 无限调用追踪",
+                "pricing.plan3.feature2": "✓ 无限项目",
+                "pricing.plan3.feature3": "✓ 1 年数据保留",
+                "pricing.plan3.feature4": "✓ 团队协作",
+                "pricing.plan3.feature5": "✓ 优先支持",
+                "pricing.plan3.feature6": "✓ API 访问",
+                "pricing.plan3.cta": "联系我们 →",
+                "pricing.tip": "💡 Pro 版平均每天不到 1 杯奶茶钱，省下的调试时间价值翻倍",
+                "waitlist.title": "别让你的 AI 继续\"盲盒\"了",
+                "waitlist.subtitle": "加入等待列表，享早期优惠价 + 专属客服",
+                "waitlist.cta": "🔥 抢占优惠",
+                "waitlist.stats": "已有 127 位开发者加入 · 平均节省 60% 调试时间"
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update lang buttons
+            document.getElementById('lang-zh').classList.toggle('active', lang === 'zh');
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            
+            // Update html lang attribute
+            document.documentElement.lang = lang;
+            
+            // Update page title
+            if (lang === 'en') {
+                document.title = 'DevLens - AI API Debugging & Monitoring';
+            } else {
+                document.title = 'DevLens - AI API 调试与监控';
+            }
+            
+            // Save preference
+            localStorage.setItem('devlens-lang', lang);
+        }
+
+        // Detect browser language
+        function detectLanguage() {
+            const saved = localStorage.getItem('devlens-lang');
+            if (saved) return saved;
+            
+            const browserLang = navigator.language || navigator.userLanguage;
+            if (browserLang.startsWith('zh')) return 'zh';
+            return 'en';
+        }
+
+        // Initialize
+        document.getElementById('lang-zh').addEventListener('click', () => setLanguage('zh'));
+        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+
+        // Set initial language
+        setLanguage(detectLanguage());
+    </script>
+</body>
+</html>
